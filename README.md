@@ -1,4 +1,4 @@
-## gnss-denied-test for automobile
+## gnss-denied-navigation-test for automobile
 An testbed for GNSS-denied navigation. Pre-trained perception extracts motion
 from a stereo camera, and a GTSAM factor graph fuses it with an IMU and whatever GNSS is left.
 
