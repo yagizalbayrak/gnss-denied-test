@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+.DS_Store
+*.rrd
+
+# Downloaded datasets stay local; only the fetcher script is tracked.
+data/*
+!data/download_sample.py

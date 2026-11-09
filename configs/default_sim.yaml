@@ -1,0 +1,66 @@
+# Simulation scenario. Times are seconds from the start of the drive.
+dataset:
+  root: data/kitti_raw
+  date: "2011_09_30"
+  drive: "0018"
+
+gnss:
+  rate_hz: 1.0
+  sigma_horizontal_m: 0.5
+  sigma_vertical_m: 1.0
+  urban_cauchy_scale_m: 5.0
+  urban_max_jump_m: 100.0
+  urban_covariance_inflation: 25.0
+  spoof_drift_mps: 1.0
+  spoof_bearing_deg: 90.0
+  seed: 0
+  windows:
+    - {mode: blackout, start_s: 30.0, end_s: 90.0}
+
+# `estimator` is the noise model the graph assumes. `injected` is added to the raw signal first.
+# The raw OXTS sigmas sit above the noise measured while driving (about 0.007 m/s^2/sqrt(Hz) and
+# 6e-5 rad/s/sqrt(Hz)) because vibration, not sensor noise, dominates once the vehicle moves.
+imu_profiles:
+  raw:
+    injected: null
+    initial_sigmas:
+      attitude_sigma_rad: 0.002
+      accel_bias_sigma_mps2: 0.01
+      gyro_bias_sigma_radps: 1.0e-4
+    estimator:
+      gravity_mps2: 9.809
+      accel_noise_density: 0.01
+      gyro_noise_density: 2.0e-4
+      accel_bias_random_walk: 1.0e-3
+      gyro_bias_random_walk: 1.0e-5
+  # Roughly an industrial MEMS unit: 200 ug/sqrt(Hz), 0.7 deg/sqrt(h), 3 mg and 100 deg/h turn-on.
+  mems:
+    injected:
+      accel_noise_density: 2.0e-3
+      gyro_noise_density: 2.0e-4
+      accel_bias_random_walk: 2.0e-4
+      gyro_bias_random_walk: 2.0e-5
+      accel_turn_on_bias_sigma: 0.03
+      gyro_turn_on_bias_sigma: 5.0e-4
+      seed: 0
+    initial_sigmas:
+      attitude_sigma_rad: 0.005
+      accel_bias_sigma_mps2: 0.03
+      gyro_bias_sigma_radps: 5.0e-4
+    estimator:
+      gravity_mps2: 9.809
+      accel_noise_density: 0.012
+      gyro_noise_density: 4.0e-4
+      accel_bias_random_walk: 1.0e-3
+      gyro_bias_random_walk: 3.0e-5
+
+# Per-frame errors assumed for a constraint. `scripts/run_visual_odometry.py` measures them against
+# ground truth. These sit above the measured std (5e-4 rad, 0.03 m forward) because frame errors are
+# correlated, which a white noise model cannot express.
+visual_odometry:
+  orb:
+    rotation_sigma_rad: 1.0e-3
+    translation_sigma_m: 0.05
+  aliked:
+    rotation_sigma_rad: 1.0e-3
+    translation_sigma_m: 0.05
